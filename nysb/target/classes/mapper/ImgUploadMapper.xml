@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nysb.demo01.mapper.ImgUploadMapper">
+    <!--    parameterType 传入的参数类型
+            resultMap 返回结果的类型
+    -->
+    <!--    用于插入测试图片-->
+    <insert id="save"   >
+        insert into nysb_sb(img) values (#{img,jdbcType=BLOB})
+    </insert>
+
+    <select id="recognition"  resultType="Img">
+
+        select type_id,status_id from nysb_sb where img=#{img,jdbcType=BLOB}
+
+    </select>
+
+    <resultMap id="returnResult" type="Plant">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="shi_qi" property="shiQi" jdbcType="VARCHAR"/>
+        <result column="features" property="features" jdbcType="LONGVARCHAR"/>
+        <result column="advice" property="advice" jdbcType="LONGVARCHAR"/>
+        <result column="type_id" property="typeId" jdbcType="INTEGER"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="percent" property="percent" jdbcType="FLOAT"/>
+        <collection property="status" ofType="Status">
+            <id column="status_id" jdbcType="INTEGER" property="id"/>
+            <result column="status" jdbcType="VARCHAR" property="status"/>
+            <result column="status_id" jdbcType="INTEGER" property="statusId"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectById" resultMap="returnResult">
+        select * from nysb_plant p,nysb_plant_status s where p.type_id = #{typeId,jdbcType=INTEGER} and s.status_id = #{statusId,jdbcType = INTEGER}
+    </select>
+</mapper>
